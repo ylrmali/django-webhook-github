@@ -1,4 +1,4 @@
-# GITHUB WEBHOOK USAGE WITH DJANGO FRAMEWORK
+# GITHUB WEBHOOK USAGE WITH DJANGO
 
 *Github webhook provides a socket for recognize the changes in the repository.*
 
