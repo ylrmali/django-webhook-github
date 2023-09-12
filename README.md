@@ -7,7 +7,7 @@
 1. First we have to create web hook  in repository settings.
 2. Go to repository → Settings → Webhook →  Add web hook
 
-![alt text](GITHUB%20WEBHOOK%204b2b3bc98faa4c39be8fea3526c6928a/webhook.png)
+![webhook_image](./webhook.png)
 
 - Here we have 5 input url, content-type, event and active
 
