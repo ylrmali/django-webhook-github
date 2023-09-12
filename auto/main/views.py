@@ -7,7 +7,9 @@ from django.http import HttpResponse
 def index(request):
     return render(request, 'main/index.html')
 
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def git(request):
     if request.method == 'POST':
         payload = request.json
