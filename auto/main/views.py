@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def git(request):
     if request.method == 'POST':
-        payload = request.json
+        payload = request
         print('anan')
         print(payload)
         return HttpResponse(payload)
