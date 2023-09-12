@@ -9,7 +9,7 @@
 
 ![webhook_image](./webhook.png)
 
-- Here we have 5 input url, content-type, event and active
+- Here we have 5 input url, secret, content-type, event and active
 
 `Payload URL` → it’s webhook url in our project. We should create a url for webhook.
 
