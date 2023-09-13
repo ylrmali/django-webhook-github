@@ -52,8 +52,24 @@ def webhook(request):
     if event == 'ping':
         return HttpResponse('ping')
     elif event == 'push':
-        # Deploy some code for example
-        os.system(f'cd {settings.BASE_DIR} && git pull origin main') 
+        # Control database count and update database
+        # if database count is 1, update database and migrate
+        databases = settings.DATABASES
+        if len(databases) == 1:
+            os.system(f'cd {settings.BASE_DIR} \
+                      && git pull origin main  \
+                      && python manage.py manage.py \
+                      && python manage.py migrate')
+        else:
+            for key in databases.keys():
+                if key == 'default':
+                    continue
+                else:
+                    os.system(f'cd {settings.BASE_DIR} \
+                            && git pull origin main  \
+                            && python manage.py manage.py \
+                            && python manage.py migrate --database={key} \
+                            && python manage.py migrate')
         return HttpResponse('success')
 
     # In case we receive an event that's not ping or push
