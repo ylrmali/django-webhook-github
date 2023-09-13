@@ -58,7 +58,6 @@ def webhook(request):
         if len(databases) == 1:
             os.system(f'cd {settings.BASE_DIR} \
                       && git pull origin main  \
-                      && python manage.py manage.py \
                       && python manage.py migrate')
         else:
             for key in databases.keys():
@@ -67,7 +66,6 @@ def webhook(request):
                 else:
                     os.system(f'cd {settings.BASE_DIR} \
                             && git pull origin main  \
-                            && python manage.py manage.py \
                             && python manage.py migrate --database={key} \
                             && python manage.py migrate')
         return HttpResponse('success')
