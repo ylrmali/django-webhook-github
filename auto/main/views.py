@@ -23,8 +23,8 @@ def index(request):
 def webhook(request):
 
     instance = request.body
-    jsonable = json.dumps(instance)
-    print(jsonable)
+    jsonable = json.loads(instance)
+    print(type(jsonable), type(instance))
     # Verify if request came from GitHub
     forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
     client_ip_address = ip_address(forwarded_for) # get request ip address
