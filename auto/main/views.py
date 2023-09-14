@@ -9,6 +9,7 @@ from hashlib import sha1
 import requests
 import hmac
 import os
+import json
 
 # Create your views here.
 
@@ -21,8 +22,9 @@ def index(request):
 @csrf_exempt
 def webhook(request):
 
-    print(request.body.json()['ref'])
-
+    instance = request.body
+    jsonable = json.dumps(instance)
+    print(jsonable)
     # Verify if request came from GitHub
     forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
     client_ip_address = ip_address(forwarded_for) # get request ip address
