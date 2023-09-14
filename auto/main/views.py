@@ -22,9 +22,9 @@ def index(request):
 @csrf_exempt
 def webhook(request):
 
-    instance = request.body
-    jsonable = json.loads(instance)
-    print(jsonable['ref'].split('/')[-1])
+    data = request.body
+    json_data = json.loads(data)
+    branch = json_data['ref'].split('/')[-1]
     # Verify if request came from GitHub
     forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
     client_ip_address = ip_address(forwarded_for) # get request ip address
@@ -62,7 +62,7 @@ def webhook(request):
         databases = settings.DATABASES
         if len(databases) == 1:
             os.system(f'cd {settings.BASE_DIR} \
-                      && git pull origin main  \
+                      && git pull origin {branch}  \
                       && python3 manage.py migrate')
         else:
             for key in databases.keys():
@@ -70,7 +70,7 @@ def webhook(request):
                     continue
                 else:
                     os.system(f'cd {settings.BASE_DIR} \
-                            && git pull origin main  \
+                            && git pull origin {branch}  \
                             && python3 manage.py migrate --database={key} \
                             && python3 manage.py migrate')
         return HttpResponse('success')
