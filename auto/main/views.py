@@ -24,7 +24,7 @@ def webhook(request):
 
     instance = request.body
     jsonable = json.loads(instance)
-    print(type(jsonable), type(instance))
+    print(jsonable['ref'].split('/')[-1])
     # Verify if request came from GitHub
     forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
     client_ip_address = ip_address(forwarded_for) # get request ip address
@@ -63,7 +63,7 @@ def webhook(request):
         if len(databases) == 1:
             os.system(f'cd {settings.BASE_DIR} \
                       && git pull origin main  \
-                      && python manage.py migrate')
+                      && python3 manage.py migrate')
         else:
             for key in databases.keys():
                 if key == 'default':
@@ -71,8 +71,8 @@ def webhook(request):
                 else:
                     os.system(f'cd {settings.BASE_DIR} \
                             && git pull origin main  \
-                            && python manage.py migrate --database={key} \
-                            && python manage.py migrate')
+                            && python3 manage.py migrate --database={key} \
+                            && python3 manage.py migrate')
         return HttpResponse('success')
 
     # In case we receive an event that's not ping or push
