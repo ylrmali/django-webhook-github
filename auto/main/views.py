@@ -20,6 +20,9 @@ def index(request):
 @require_POST
 @csrf_exempt
 def webhook(request):
+
+    print(request.body['ref'])
+
     # Verify if request came from GitHub
     forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
     client_ip_address = ip_address(forwarded_for) # get request ip address
