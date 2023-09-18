@@ -51,7 +51,6 @@ def webhook(request):
 
     mac = hmac.new(force_bytes(settings.GITHUB_WEBHOOK_KEY), msg=force_bytes(request.body), digestmod=sha1)
     # print((force_bytes(request.body)))
-    print(force_bytes(mac.hexdigest()))
     if not hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature)):
         return HttpResponseForbidden('Permission denied.')
 
@@ -69,6 +68,8 @@ def webhook(request):
             os.system(f'cd {settings.BASE_DIR} \
                       && git pull origin {branch}  \
                       && python3 manage.py migrate')
+            print(force_bytes(mac.hexdigest()))
+
         else:
             for key in databases.keys():
                 if key == 'default':
