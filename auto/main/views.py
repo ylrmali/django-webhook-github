@@ -26,16 +26,16 @@ def webhook(request):
     json_data = json.loads(data)
     branch = json_data['ref'].split('/')[-1]
     # Verify if request came from GitHub
-    forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
+    forwarded_for = u'{}'.format(request.META.get('REMOTE_ADDR'))
     client_ip_address = ip_address(forwarded_for) # get request ip address
     whitelist = requests.get('https://api.github.com/meta').json()['hooks'] # get github hook's ips
 
     # control ip address is valid or not
-    for valid_ip in whitelist:
-        if client_ip_address in ip_network(valid_ip):
-            break
-    else:
-        return HttpResponseForbidden('Permission denied.')
+    # for valid_ip in whitelist:
+    #     if client_ip_address in ip_network(valid_ip):
+    #         break
+    # else:
+    #     return HttpResponseForbidden('Permission denied.')
 
     # Verify the request signature
     header_signature = request.META.get('HTTP_X_HUB_SIGNATURE')
@@ -47,6 +47,8 @@ def webhook(request):
         return HttpResponseServerError('Operation not supported.', status=501)
 
     mac = hmac.new(force_bytes(settings.GITHUB_WEBHOOK_KEY), msg=force_bytes(request.body), digestmod=sha1)
+    # print((force_bytes(request.body)))
+    print(force_bytes(mac.hexdigest()))
     if not hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature)):
         return HttpResponseForbidden('Permission denied.')
 
