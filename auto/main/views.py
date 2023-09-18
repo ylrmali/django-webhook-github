@@ -68,7 +68,7 @@ def webhook(request):
             os.system(f'cd {settings.BASE_DIR} \
                       && git pull origin {branch}  \
                       && python3 manage.py migrate')
-            print(force_bytes(mac.hexdigest()))
+            print(force_bytes(mac.hexdigest()), force_bytes(signature), hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature)))
 
         else:
             for key in databases.keys():
