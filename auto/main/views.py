@@ -68,7 +68,6 @@ def webhook(request):
             os.system(f'cd {settings.BASE_DIR} \
                       && git pull origin {branch}  \
                       && python3 manage.py migrate')
-            print(force_bytes(mac.hexdigest()), force_bytes(signature), hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature)))
 
         else:
             for key in databases.keys():
@@ -79,6 +78,8 @@ def webhook(request):
                             && git pull origin {branch}  \
                             && python3 manage.py migrate --database={key} \
                             && python3 manage.py migrate')
+                cont = hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature))
+                print(force_bytes(mac.hexdigest()), force_bytes(signature), cont)
         return HttpResponse('success')
 
     # In case we receive an event that's not ping or push
