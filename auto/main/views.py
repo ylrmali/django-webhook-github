@@ -31,7 +31,7 @@ def webhook(request):
     # Verify if request came from GitHub
     remote_addr = u'{}'.format(request.META.get('REMOTE_ADDR'))
     forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
-    ip = forwarded_for is not None if forwarded_for else remote_addr
+    ip = forwarded_for if forwarded_for != 'None' else remote_addr
     client_ip_address = ip_address(ip) # get request ip address
     whitelist = requests.get('https://api.github.com/meta').json()['hooks'] # get github hook's ips
 
