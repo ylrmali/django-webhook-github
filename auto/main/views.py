@@ -27,10 +27,12 @@ def webhook(request):
     try:
         branch = json_data['ref'].split('/')[-1]
     except KeyError:
-        raise 'Its just a ping event'
+        print('Its just a ping event')
     # Verify if request came from GitHub
-    forwarded_for = u'{}'.format(request.META.get('REMOTE_ADDR'))
-    client_ip_address = ip_address(forwarded_for) # get request ip address
+    remote_addr = u'{}'.format(request.META.get('REMOTE_ADDR'))
+    forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
+    ip = forwarded_for is not None if forwarded_for else remote_addr
+    client_ip_address = ip_address(ip) # get request ip address
     whitelist = requests.get('https://api.github.com/meta').json()['hooks'] # get github hook's ips
 
     # control ip address is valid or not
