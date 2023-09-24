@@ -33,6 +33,7 @@ def webhook(request):
     forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
     ip = forwarded_for if forwarded_for != 'None' else remote_addr
     client_ip_address = ip_address(ip) # get request ip address
+    print(client_ip_address)
     whitelist = requests.get('https://api.github.com/meta').json()['hooks'] # get github hook's ips
 
     # control ip address is valid or not
