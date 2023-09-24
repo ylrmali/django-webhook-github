@@ -82,7 +82,6 @@ def webhook(request):
                             && python3 manage.py migrate --database={key} \
                             && python3 manage.py migrate')
                 cont = hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature))
-                print(force_bytes(mac.hexdigest()), force_bytes(signature), cont)
         return HttpResponse('success')
 
     # In case we receive an event that's not ping or push
