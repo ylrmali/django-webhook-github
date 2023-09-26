@@ -29,11 +29,16 @@ def webhook(request):
     except KeyError:
         print('Its just a ping event')
     # Verify if request came from GitHub
-    remote_addr = u'{}'.format(request.META.get('REMOTE_ADDR'))
-    forwarded_for = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
-    ip = forwarded_for if forwarded_for != 'None' else remote_addr
+    remote_addr = request.META.get('REMOTE_ADDR')
+    forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if forwarded_for and forwarded_for.count(',') >= 1:
+        ip = u'{}'.format(forwarded_for.split(',')[0])
+    elif len(forwarded_for) == 1:
+        ip = u'{}'.format(request.META.get('HTTP_X_FORWARDED_FOR'))
+    elif remote_addr and forwarded_for == 'None':
+        ip = u'{}'.format(remote_addr)
+
     client_ip_address = ip_address(ip) # get request ip address
-    print(client_ip_address)
     whitelist = requests.get('https://api.github.com/meta').json()['hooks'] # get github hook's ips
 
     # control ip address is valid or not
@@ -69,8 +74,9 @@ def webhook(request):
         databases = settings.DATABASES
         if len(databases) == 1:
             os.system(f'cd {settings.BASE_DIR} \
-                      && git pull origin {branch}  \
-                      && python3 manage.py migrate')
+                    && git pull origin {branch}  \
+                    && python3 manage.py makemigrations \
+                    && python3 manage.py migrate')
 
         else:
             for key in databases.keys():
@@ -79,9 +85,12 @@ def webhook(request):
                 else:
                     os.system(f'cd {settings.BASE_DIR} \
                             && git pull origin {branch}  \
+                            && python3 manage.py makemigrations {key} \
                             && python3 manage.py migrate --database={key} \
                             && python3 manage.py migrate')
-                cont = hmac.compare_digest(force_bytes(mac.hexdigest()), force_bytes(signature))
+        # if we user daphne server, we need to restart daphne server
+        if 'daphne' in settings.INSTALLED_APPS:
+            os.system('sudo supervisorctl restart all')
         return HttpResponse('success')
 
     # In case we receive an event that's not ping or push
